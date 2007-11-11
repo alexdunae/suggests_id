@@ -5,5 +5,5 @@
 
 == Version 1.1 (the David Baldwin edition)
  * added support for suffixes
- * fixed bug that occurred when using certain column names
+ * fixed bug when not supplying 'disposable' option
 
