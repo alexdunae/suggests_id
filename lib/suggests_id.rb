@@ -70,8 +70,10 @@ module Dunae #:nodoc:
         ids << cleanup_id(ids.last.gsub(/(\b(at|de|und|the|a|of|un(a|e|o)?|le(s)?|la|in|of)\b)/i, "-"))
 
         # remove any disposable words, one by one
-        disposable.each do |w|
-          ids << cleanup_id(ids.last.gsub(Regexp.compile('\b'+w+'\b+'), ''))
+        if disposable
+          disposable.each do |w|
+            ids << cleanup_id(ids.last.gsub(Regexp.compile('\b'+w+'\b+'), ''))
+          end
         end
         
         # remove numbers
@@ -84,11 +86,6 @@ module Dunae #:nodoc:
 
         # remove empty IDs
         ids.delete('')
-
-        # for debugging only
-        ids.each do |t|
-          logger.debug " - potential ID: #{t}"
-        end
 
         available_ids = find_available_ids(ids.clone, target_column)
 
