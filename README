@@ -1,0 +1,51 @@
+= Suggests ID plugin readme
+
+Suggests an identifier/url chunk based on provided fields.
+
+I use this plugin to generate login names, e-mail addresses and URLs for
+user-entered content.
+
+The plugin takes one or more strings as input, sanitizes the input and 
+generates a list of possible IDs.  The shortest ID is returned.
+
+
+== Installation
+<tt>./script/plugin install http://code.dunae.ca/suggests_id</tt>
+
+
+== Usage examples
+
+In your model, specify which column holds the identifier - this is used when 
+checking for duplicates.
+
+  class User < ActiveRecord::Base
+    suggests_id :target => :login_name
+  end
+
+Optionally, you can add an array of disposable words which will be trimmed out 
+when generating IDs.
+
+  class User < ActiveRecord::Base
+    suggests_id :target => :login_name, :disposable => ['mr', 'mrs', 'ms', 'miss']
+  end
+
+Run your input through <tt>suggest_id</tt> to an ID suggestion.
+
+ >> User.suggest_id('John Smith')
+ => "johnsmith"
+
+ # Disposable words are removed if possible
+ >> User.suggest_id(['Mr.', 'John', 'Smith'])
+ => "johnsmith"
+
+
+== Testing
+
+The unit tests for this plugin use an in-memory sqlite3 database (http://www.sqlite.org/).
+
+To execute the unit tests run the default rake task (<tt>rake</tt>). To execute the unit 
+tests but preserve to debug log run <tt>rake test</tt>.
+
+== Credits
+
+Written by Alex Dunae (dunae.ca, e-mail 'code' at the same domain), 2007.
