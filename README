@@ -25,6 +25,31 @@ checking for duplicates.
  >> User.suggest_id('John Smith')
  => "johnsmith"
 
+==== Suffixes
+
+You can also add a suffix.  The following code will check for IDs between
+<tt>title-0000</tt> and <tt>title-0049</tt> if <tt>johnsmith</tt>
+is not available.
+
+  class User < ActiveRecord::Base
+    suggests_id :target => :login_name
+                :suffix => '-0000', 
+                :suffix_iterations => 50
+  end
+
+  # 'title' is available
+  >> User.suggest_id('Title')
+  => "title"
+
+  # 'title' already taken
+  >> User.suggest_id('Title')
+  => "title-0000"
+
+  # 'title-0000' already taken
+  >> User.suggest_id('Title')
+  => "title-0001"
+
+
 ==== Disposable words
 
 Optionally, you can add an array of disposable words which will be trimmed out 
@@ -38,19 +63,6 @@ when generating IDs.
  >> User.suggest_id(['Mr.', 'John', 'Smith'])
  => "johnsmith"
 
-==== Suffixes
-
-You can also add a suffix.  The following code will check for IDs between
-<tt>title-0000</tt> and <tt>title-0049</tt> if <tt>johnsmith</tt>
-is not available.
-
-  class User < ActiveRecord::Base
-    suggests_id :target => :login_name
-                :suffix => '-0000', 
-                :suffix_iterations => 50
-  end
-
-  >> User.suggest_id('Title')
 
 === Testing
 
