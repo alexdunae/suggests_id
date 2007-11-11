@@ -55,8 +55,10 @@ module Dunae #:nodoc:
         titles << cleanup_id(titles.last.gsub(/(\b(at|de|und|the|a|of|un(a|e|o)?|le(s)?|la|in|of)\b)/i, "-"))
 
         # remove any disposable words, one by one
-        disposable.each do |w|
-          titles << cleanup_id(titles.last.gsub(Regexp.compile('\b'+w+'\b+'), ''))
+        if disposable
+          disposable.each do |w|
+            titles << cleanup_id(titles.last.gsub(Regexp.compile('\b'+w+'\b+'), ''))
+          end
         end
         
         # remove numbers
@@ -69,11 +71,6 @@ module Dunae #:nodoc:
 
         # remove empty title if present
         titles.delete("")
-
-        # for debugging only
-        titles.each do |t|
-          logger.debug " - potential title: #{t}"
-        end
 
         # search for potential IDs and return any matches
         taken = find(:all, :conditions =>"(`#{target_column.to_s}` IN ('#{titles.join('\',\'')}'))", :select => target_column)
