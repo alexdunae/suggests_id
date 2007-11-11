@@ -1,4 +1,4 @@
-= Suggests ID plugin readme
+= Suggests ID Rails Plugin README
 
 Suggests an identifier/url chunk based on provided fields.
 
@@ -9,43 +9,60 @@ The plugin takes one or more strings as input, sanitizes the input and
 generates a list of possible IDs.  The shortest ID is returned.
 
 
-== Installation
-<tt>./script/plugin install http://code.dunae.ca/suggests_id</tt>
+=== Installation
+  ./script/plugin install http://code.dunae.ca/svn/suggests_id
 
 
-== Usage examples
+=== Examples
 
 In your model, specify which column holds the identifier - this is used when 
 checking for duplicates.
 
-  class User < ActiveRecord::Base
-    suggests_id :target => :login_name
-  end
+ class User < ActiveRecord::Base
+   suggests_id :target => :login_name
+ end
+
+ >> User.suggest_id('John Smith')
+ => "johnsmith"
+
+==== Disposable words
 
 Optionally, you can add an array of disposable words which will be trimmed out 
 when generating IDs.
 
-  class User < ActiveRecord::Base
-    suggests_id :target => :login_name, :disposable => ['mr', 'mrs', 'ms', 'miss']
-  end
-
-Run your input through <tt>suggest_id</tt> to an ID suggestion.
-
- >> User.suggest_id('John Smith')
- => "johnsmith"
+ class User < ActiveRecord::Base
+   suggests_id :target => :login_name, :disposable => ['mr', 'mrs', 'ms', 'miss']
+ end
 
  # Disposable words are removed if possible
  >> User.suggest_id(['Mr.', 'John', 'Smith'])
  => "johnsmith"
 
+==== Suffixes
 
-== Testing
+You can also add a suffix.  The following code will check for IDs between
+<tt>title-0000</tt> and <tt>title-0049</tt> if <tt>johnsmith</tt>
+is not available.
+
+  class User < ActiveRecord::Base
+    suggests_id :target => :login_name
+                :suffix => '-0000', 
+                :suffix_iterations => 50
+  end
+
+  >> User.suggest_id('Title')
+
+=== Testing
 
 The unit tests for this plugin use an in-memory sqlite3 database (http://www.sqlite.org/).
 
 To execute the unit tests run the default rake task (<tt>rake</tt>). To execute the unit 
 tests but preserve to debug log run <tt>rake test</tt>.
 
-== Credits
+=== Credits and code
 
 Written by Alex Dunae (dunae.ca, e-mail 'code' at the same domain), 2007.
+
+The project page is http://code.dunae/suggests_id/.
+
+Thanks to David Baldwin (http://www.baldwindigital.net/) for suggestions for version 1.1.

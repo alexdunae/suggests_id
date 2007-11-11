@@ -1,0 +1,9 @@
+= CHANGELOG
+
+== Version 1.0
+ * initial version
+
+== Version 1.1 (the David Baldwin edition)
+ * added support for suffixes
+ * fixed bug that occurred when using certain column names
+
