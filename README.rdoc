@@ -1,0 +1,80 @@
+= Suggests ID Rails Plugin README
+
+Suggests an identifier/url chunk based on provided fields.
+
+I use this plugin to generate login names, e-mail addresses and URLs for
+user-entered content.
+
+The plugin takes one or more strings as input, sanitizes the input and 
+generates a list of possible IDs.  The shortest ID is returned.
+
+
+=== Installation
+  ./script/plugin install git://github.com/alexdunae/suggests_id.git
+
+
+=== Examples
+
+In your model, specify which column holds the identifier - this is used when 
+checking for duplicates.
+
+ class User < ActiveRecord::Base
+   suggests_id :target => :login_name
+ end
+
+ >> User.suggest_id('John Smith')
+ => "johnsmith"
+
+==== Suffixes
+
+You can also add a suffix.  The following code will check for IDs between
+<tt>title-0000</tt> and <tt>title-0049</tt> if <tt>johnsmith</tt>
+is not available.
+
+  class User < ActiveRecord::Base
+    suggests_id :target => :login_name
+                :suffix => '-0000', 
+                :suffix_iterations => 50
+  end
+
+  # 'title' is available
+  >> User.suggest_id('Title')
+  => "title"
+
+  # 'title' already taken
+  >> User.suggest_id('Title')
+  => "title-0000"
+
+  # 'title-0000' already taken
+  >> User.suggest_id('Title')
+  => "title-0001"
+
+
+==== Disposable words
+
+Optionally, you can add an array of disposable words which will be trimmed out 
+when generating IDs.
+
+ class User < ActiveRecord::Base
+   suggests_id :target => :login_name, :disposable => ['mr', 'mrs', 'ms', 'miss']
+ end
+
+ # Disposable words are removed if possible
+ >> User.suggest_id(['Mr.', 'John', 'Smith'])
+ => "johnsmith"
+
+
+=== Testing
+
+The unit tests for this plugin use an in-memory sqlite3 database (http://www.sqlite.org/).
+
+To execute the unit tests run the default rake task (<tt>rake</tt>). To execute the unit 
+tests but preserve to debug log run <tt>rake test</tt>.
+
+=== Credits and code
+
+Written by Alex Dunae (dunae.ca, e-mail 'code' at the same domain), 2007-09.
+
+The project page is http://code.dunae/suggests_id/.
+
+Thanks to David Baldwin (http://www.baldwindigital.net/) for suggestions for version 1.1.
